@@ -34,7 +34,7 @@ ts=1:dt:numel(Qdata)*1800; %1800s is the sample interval in the original data
 T0=263;
 ts1=ts(1:7*24*3600);
 [t,Ts1]=ode45(@myfunc,ts1,T0);
-%restart simulation assuming new T0 is observed
+%restart simulation assuming a new T0 is observed
 T0=259;
 ts2=ts(7*24*3600+1:14*24*3600);
 [t,Ts2]=ode45(@myfunc,ts2,T0);
