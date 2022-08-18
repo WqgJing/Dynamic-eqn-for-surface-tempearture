@@ -10,18 +10,28 @@ global T0
 global RnS;
 global Q;
 
-global omega0
-omega0=2*pi/(24*3600);
 
 %physical parameters for snow
-global d; %solar penetration depth
-d=4E-3; % d should be ~O(10^-3)
-global rho %density
-rho=400;
-global k %thermal conductivity
-k=0.15;
-global dt
+d=4E-3; % solar penetration depth d should be ~O(10^-3)
+rho=400; %density
+k=0.15; %thermal conductivity
+C=2090; %specific heat capacity
+alpha=k/(rho*C); %thermal diffusivity
+
+global omega0;
+omega0=2*pi/(24*3600);
+u=omega0*d^2/alpha;
+global dt;
 dt=1;
+global C1;
+C1=(1+(u-1)*sqrt(u/2))/(1+u^2);
+global C2;
+C2=(u-(u+1)*sqrt(u/2))/(1+u^2);
+global Is;
+Is=rho*C*sqrt(alpha); %thermal inertia
+
+
+
 
 RnS=@(tau) interp1((1:numel(RnSdata))*1800,RnSdata,tau,'spline','extrap');
 Q=@(tau) interp1((1:numel(Qdata))*1800,Qdata,tau,'spline','extrap');
@@ -81,19 +91,14 @@ set(T, 'fontsize', 14, 'verticalalignment', 'top', 'horizontalalignment', 'left'
 
 function dTs=myfunc(t,Ts)
 global T0
-global omega0
-global d;
-global k;
-global rho
-C=2090;
-alpha=k/(rho*C);
-u=omega0*d^2/alpha;
-Is=rho*C*sqrt(alpha);
-C1=(1+(u-1)*sqrt(u/2))/(1+u^2);
-C2=(u-(u+1)*sqrt(u/2))/(1+u^2);
 global dt;
 global RnS;
 global Q;
+global C1;
+global C2;
+global omega0;
+global Is;
+
 dRnSdt=(RnS(t+dt)-RnS(t-dt))/(2*dt);
 dTs=sqrt(2*omega0)/Is*(C1*RnS(t)+Q(t)+C2/omega0*dRnSdt)-omega0*(Ts-T0);
 end
