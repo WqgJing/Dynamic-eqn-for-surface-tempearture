@@ -41,7 +41,7 @@ ts=1:dt:numel(Qdata)*1800; %1800s is the sample interval in the original data
 %restart every week, update simulation assuming new T0 is observed 
 
 
-T0=262;
+T0=261;
 ts1=ts(1:7*24*3600);
 [t,Ts1]=ode45(@myfunc,ts1,T0);
 %restart simulation assuming a new T0 is observed
